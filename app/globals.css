@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Girloy";
+  font-style: normal;
+  src: url("../public/fonts/Gilroy-Black.ttf");
+}
+@font-face {
+  font-family: "Girloy";
+  font-style: italic;
+  src: url("../public/fonts/Gilroy-BlackItalic.ttf");
+}
+@font-face {
+  font-family: "Girloy";
+  font-style: normal;
+  src: url("../public/fonts/Gilroy-Regular.ttf");
+}
+@font-face {
+  font-family: "Girloy";
+  font-style: italic;
+  src: url("../public/fonts/Gilroy-RegularItalic.ttf");
+}
+
+* {
+  font-family: "Girloy";
+}
+
+::selection {
+  color: rgb(232, 145, 47);
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
