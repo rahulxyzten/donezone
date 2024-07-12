@@ -1,4 +1,5 @@
 import "./globals.css";
+import { UserContextProvider } from "@/components/Provider";
 
 export const metadata = {
   title: "DoneZone",
@@ -8,7 +9,9 @@ export const metadata = {
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">
-      <body className="relative w-full h-screen bg-zinc-800">{children}</body>
+      <body className="dark relative w-full min-h-screen bg-zinc-800">
+        <UserContextProvider>{children}</UserContextProvider>
+      </body>
     </html>
   );
 };

@@ -27,15 +27,9 @@
   font-family: "Girloy";
 }
 
+/* when you select something */
 ::selection {
   color: rgb(232, 145, 47);
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
 
