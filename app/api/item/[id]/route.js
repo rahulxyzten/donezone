@@ -39,8 +39,8 @@ export const DELETE = async (request, { params }) => {
   try {
     await connectToDB();
 
-    // Find the prompt by ID and remove it
-    await Item.findByIdAndRemove(params.id);
+    // Deleting project data from databse
+    await Item.deleteOne({ _id: params.id });
 
     return new Response("Item deleted successfully", { status: 200 });
   } catch (error) {

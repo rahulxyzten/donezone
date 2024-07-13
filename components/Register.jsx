@@ -4,12 +4,6 @@ import Link from "next/link";
 import {
   Modal,
   ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Avatar,
-  AvatarGroup,
-  Tooltip,
 } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { FcGoogle } from "react-icons/fc";

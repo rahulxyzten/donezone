@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Item from "@/models/items";
+import User from "@/models/user";
 
 let isConnected = false; // track the connection
 
