@@ -39,7 +39,7 @@ export const DELETE = async (request, { params }) => {
   try {
     await connectToDB();
 
-    // Deleting project data from databse
+    // Deleting project data from database
     await Item.deleteOne({ _id: params.id });
 
     return new Response("Item deleted successfully", { status: 200 });

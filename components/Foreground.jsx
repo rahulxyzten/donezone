@@ -22,7 +22,7 @@ const Foreground = () => {
     password: "",
     confirmPassword: "",
   });
-  const [allitems, setAllItems] = useState([]);
+  const [allItems, setAllItems] = useState([]);
   const [showAddInput, setShowAddInput] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editItemId, setEditItemId] = useState("");
@@ -40,110 +40,6 @@ const Foreground = () => {
         console.error("Failed to fetch profile data", error);
       });
   }, [setUserInfo]);
-
-  const handleLoingOpen = async () => {
-    setOpenRegister(false);
-    setOpenLogin(true);
-    setUser({
-      username: "",
-      password: "",
-      confirmPassword: "",
-    });
-  };
-
-  const handleRegisterOpen = async () => {
-    setOpenLogin(false);
-    setOpenRegister(true);
-    setUser({
-      username: "",
-      password: "",
-      confirmPassword: "",
-    });
-  };
-
-  const handleRegisterUser = async (e) => {
-    e.preventDefault();
-    if (user.username.length > 12) {
-      alert("Username must be less than 12 characters !");
-      return;
-    }
-    if (user.password !== user.confirmPassword) {
-      alert("Password is not match with confirm password !");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        body: JSON.stringify({
-          username: user.username,
-          password: user.password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUserInfo(data);
-        setOpenRegister(false);
-        router.push("/");
-      } else {
-        const data = await response.json();
-        if (data.message === "Username is already taken") {
-          alert("Username is already taken");
-        } else {
-          alert("registration failed");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setSubmitting(false);
-      setUser({
-        username: "",
-        password: "",
-        confirmPassword: "",
-      });
-    }
-  };
-
-  const handleLoginUser = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify({
-          username: user.username,
-          password: user.password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUserInfo(data);
-        setOpenLogin(false);
-        router.push("/");
-      } else {
-        const data = await response.json();
-        if (data.message1 === "Username not found!") {
-          alert("Username not found!");
-        } else if (data.message2 === "Password not match!") {
-          alert("Password not match!");
-        } else {
-          alert("Wrong credentials");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setSubmitting(false);
-      setUser({
-        username: "",
-        password: "",
-        confirmPassword: "",
-      });
-    }
-  };
 
   const username = userInfo?.username;
   const id = userInfo?.id;
@@ -179,8 +75,8 @@ const Foreground = () => {
   const handleAddItem = async (e) => {
     e.preventDefault();
 
-    // Check if the length of allitems is 10 or more
-    if (allitems.length >= 10) {
+    // Check if the length of allItems is 10 or more
+    if (allItems.length >= 10) {
       alert("Maximum 10 items allowed");
       return;
     }
@@ -211,7 +107,7 @@ const Foreground = () => {
         method: "DELETE",
       });
 
-      const filteredItems = allitems.filter((p) => p._id !== item._id);
+      const filteredItems = allItems.filter((p) => p._id !== item._id);
 
       setAllItems(filteredItems);
     } catch (error) {
@@ -255,7 +151,7 @@ const Foreground = () => {
     }
   };
 
-  const hadleClose = async () => {
+  const handleClose = async () => {
     setShowAddInput(false);
     setShowEditForm(false);
     setEditItemId("");
@@ -268,7 +164,7 @@ const Foreground = () => {
         ref={ref}
         className="fixed top-0 left-0 z-[3] w-full h-full flex gap-10 flex-wrap p-5"
       >
-        {allitems.map((item, index) => (
+        {allItems.map((item, index) => (
           <Card
             key={item._id}
             data={item}
@@ -294,9 +190,15 @@ const Foreground = () => {
                     // label=""
                     value={item}
                     onChange={(e) => setItem(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleEditToDatabase(e);
+                      }
+                    }}
                   />
                   <button
-                    onClick={hadleClose}
+                    onClick={handleClose}
                     className="translation mr-1 duration-500 text-white font-bold rounded active:scale-95 hover:text-gray-400"
                   >
                     <MdCancel size="1.6em" />
@@ -305,7 +207,7 @@ const Foreground = () => {
                     type="submit"
                     className="translation duration-500 text-white font-bold rounded active:scale-95 hover:text-gray-400"
                   >
-                    <VscPassFilled size="1.5em" /> 
+                    <VscPassFilled size="1.5em" />
                   </button>
                 </form>
               ) : (
@@ -320,9 +222,15 @@ const Foreground = () => {
                     // label=""
                     value={item}
                     onChange={(e) => setItem(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddItem(e);
+                      }
+                    }}
                   />
                   <button
-                    onClick={hadleClose}
+                    onClick={handleClose}
                     className="translation mr-1 duration-500 text-white font-bold rounded active:scale-95 hover:text-gray-400"
                   >
                     <MdCancel size="1.6em" />
@@ -331,7 +239,7 @@ const Foreground = () => {
                     type="submit"
                     className="translation duration-500 text-white font-bold rounded active:scale-95 hover:text-gray-400"
                   >
-                    <VscPassFilled size="1.5em" /> 
+                    <VscPassFilled size="1.5em" />
                   </button>
                 </form>
               )
@@ -364,22 +272,24 @@ const Foreground = () => {
         <Login
           openLogin={openLogin}
           setOpenLogin={setOpenLogin}
-          handleRegisterOpen={handleRegisterOpen}
+          setOpenRegister={setOpenRegister}
           user={user}
           setUser={setUser}
           submitting={submitting}
-          handleLoginUser={handleLoginUser}
+          setSubmitting={setSubmitting}
+          setUserInfo={setUserInfo}
         />
       )}
       {openRegister && (
         <Register
           openRegister={openRegister}
           setOpenRegister={setOpenRegister}
-          handleLoingOpen={handleLoingOpen}
+          setOpenLogin={setOpenLogin}
           user={user}
           setUser={setUser}
           submitting={submitting}
-          handleRegisterUser={handleRegisterUser}
+          setSubmitting={setSubmitting}
+          setUserInfo={setUserInfo}
         />
       )}
     </>

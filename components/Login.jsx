@@ -8,11 +8,12 @@ import { FcGoogle } from "react-icons/fc";
 const Login = ({
   openLogin,
   setOpenLogin,
-  handleRegisterOpen,
+  setOpenRegister,
   user,
   setUser,
   submitting,
-  handleLoginUser,
+  setSubmitting,
+  setUserInfo
 }) => {
   useEffect(() => {
     if (openLogin) {
@@ -23,6 +24,55 @@ const Login = ({
 
   const handleModelClose = () => {
     setOpenLogin(false); // Close the modal by updating the state
+  };
+
+  const handleRegisterOpen = async () => {
+    setOpenLogin(false);
+    setOpenRegister(true);
+    setUser({
+      username: "",
+      password: "",
+      confirmPassword: "",
+    });
+  };
+
+  const handleLoginUser = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: user.username,
+          password: user.password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserInfo(data);
+        setOpenLogin(false);
+        router.push("/");
+      } else {
+        const data = await response.json();
+        if (data.message1 === "Username not found!") {
+          alert("Username not found!");
+        } else if (data.message2 === "Password not match!") {
+          alert("Password not match!");
+        } else {
+          alert("Wrong credentials");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSubmitting(false);
+      setUser({
+        username: "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
   };
 
   return (

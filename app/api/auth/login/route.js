@@ -46,8 +46,6 @@ export const POST = async (req) => {
         status: 400,
       });
     }
-
-    return new Response(JSON.stringify(userDoc), { status: 201 });
   } catch (error) {
     return new Response("Failed to login", { status: 500 });
   }

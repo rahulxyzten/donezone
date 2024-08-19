@@ -1,21 +1,19 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Modal,
-  ModalContent,
-} from "@nextui-org/react";
+import { Modal, ModalContent } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { FcGoogle } from "react-icons/fc";
 
 const Register = ({
   openRegister,
   setOpenRegister,
-  handleLoingOpen,
+  setOpenLogin,
   user,
   setUser,
   submitting,
-  handleRegisterUser,
+  setSubmitting,
+  setUserInfo,
 }) => {
   useEffect(() => {
     if (openRegister) {
@@ -26,6 +24,61 @@ const Register = ({
 
   const handleModelClose = () => {
     setOpenRegister(false); // Close the modal by updating the state
+  };
+
+  const handleLoginOpen = async () => {
+    setOpenRegister(false);
+    setOpenLogin(true);
+    setUser({
+      username: "",
+      password: "",
+      confirmPassword: "",
+    });
+  };
+
+  const handleRegisterUser = async (e) => {
+    e.preventDefault();
+    if (user.username.length > 12) {
+      alert("Username must be less than 12 characters !");
+      return;
+    }
+    if (user.password !== user.confirmPassword) {
+      alert("Password is not match with confirm password !");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          username: user.username,
+          password: user.password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserInfo(data);
+        setOpenRegister(false);
+        router.push("/");
+      } else {
+        const data = await response.json();
+        if (data.message === "Username is already taken") {
+          alert("Username is already taken");
+        } else {
+          alert("registration failed");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSubmitting(false);
+      setUser({
+        username: "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
   };
 
   return (
@@ -101,7 +154,7 @@ const Register = ({
             Already have an account?
             <span
               className="font-semibold cursor-pointer text-gray-500 transition-colors hover:text-gray-400"
-              onClick={handleLoingOpen}
+              onClick={handleLoginOpen}
             >
               {" "}
               Sign in
